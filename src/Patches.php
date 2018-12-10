@@ -422,8 +422,12 @@ class Patches implements PluginInterface, EventSubscriberInterface
             foreach ($patch_levels as $patch_level) {
                 // Check whether the patch applies in its entirety, to avoid
                 // leftovers in case of partial success.
+                // Using --dry-run to test if the patch applies before really applying it
+                // this will prevent partial patches, this -f flag is used to stop 'patch'
+                // from asking any question.
+                // This works the same as --check in the git apply implementation above.
                 if ($this->executeCommand(
-                    "patch --dry-run %s --no-backup-if-mismatch -d %s < %s",
+                    "patch -f --dry-run %s --no-backup-if-mismatch -d %s < %s",
                     $patch_level,
                     $install_path,
                     $filename
